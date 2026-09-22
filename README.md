@@ -22,6 +22,17 @@ Transmute is a file converter that runs entirely on your device. Files are never
 | Data | JSON, YAML, XML, TOML, CSV | JSON, YAML, XML, TOML, CSV, XLSX |
 | Archives | ZIP, TAR, TAR.GZ | ZIP, TAR, TAR.GZ |
 
+## PDF tools
+
+At [kelcum.github.io/transmute/#pdf](https://kelcum.github.io/transmute/#pdf):
+
+- **Merge**: combine PDFs and images into one file, drag to set the order
+- **Split**: every page as its own PDF, custom ranges (`1-3, 5, 8-10`), or pick pages by clicking
+- **Organize**: reorder, rotate and delete pages, and pull in pages from other PDFs
+- **Compress**: *Recommended* re-encodes the photos inside the PDF and leaves text as sharp, selectable vectors; *Strong* flattens pages to images for the smallest size
+- **Sign & add text**: draw, type or upload a signature, add text and dates, then drag and resize them onto any page (rotated pages included)
+- **Fill forms**: fill text fields, checkboxes, radio buttons and dropdowns right on the page, optionally flattening the result
+
 ## How it works
 
 Each category has its own engine, loaded only the first time you need it:
@@ -31,11 +42,13 @@ Each category has its own engine, loaded only the first time you need it:
 - **Documents:** [pdf.js](https://mozilla.github.io/pdf.js/) renders PDFs; [mammoth](https://github.com/mwilliamson/mammoth.js), [marked](https://marked.js.org) and [Turndown](https://github.com/mixmark-io/turndown) handle Word/Markdown/HTML; a small layout engine on top of [pdf-lib](https://pdf-lib.js.org) writes PDFs with embedded DejaVu fonts, so accented, Greek and Cyrillic text renders correctly.
 - **Spreadsheets & data:** [SheetJS](https://sheetjs.com), [js-yaml](https://github.com/nodeca/js-yaml), [fast-xml-parser](https://github.com/NaturalIntelligence/fast-xml-parser), [smol-toml](https://github.com/squirrelchat/smol-toml), [Papa Parse](https://www.papaparse.com).
 - **Archives:** [fflate](https://github.com/101arrowz/fflate) plus a small TAR reader/writer.
+- **PDF tools:** [pdf-lib](https://pdf-lib.js.org) edits the documents, pdf.js draws the page previews, and [SortableJS](https://sortablejs.github.io/Sortable/) handles drag-to-reorder.
 
 ## Limitations
 
 - Word → PDF rebuilds the document with clean typography (headings, lists, tables, images, bold/italic); it isn't a pixel-perfect copy of Word's layout. CJK characters and emoji aren't in the embedded font and show as `?`.
 - Old binary `.doc` files aren't supported; save them as `.docx` first.
+- Password-protected or encrypted PDFs can't be edited; remove the password first.
 - Very large files are limited by your device's memory.
 
 ## Running locally

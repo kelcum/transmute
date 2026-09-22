@@ -1,11 +1,11 @@
 import { CDN, lazy, loadScript, classicWorkerURL, makeCanvas, UserError } from "../util.js";
+import { getPdfLib } from "../pdf/common.js";
 
 const INPUTS = ["png", "jpg", "webp", "gif", "bmp", "ico", "tiff", "avif", "svg", "heic"];
 const OUTPUTS = ["png", "jpg", "webp", "gif", "bmp", "ico", "tiff", "pdf"];
 
 const heicLib = lazy(() => import(CDN + "heic-to@1.5.2/dist/heic-to.js"));
 const utifLib = lazy(async () => { const m = await import(CDN + "utif2@4.1.0/+esm"); return m.default || m; });
-const pdfLib = lazy(() => import(CDN + "pdf-lib@1.17.1/dist/pdf-lib.esm.min.js"));
 const gifLib = lazy(async () => {
   await loadScript(CDN + "gif.js@0.2.0/dist/gif.js");
   return classicWorkerURL(CDN + "gif.js@0.2.0/dist/gif.worker.js");
@@ -148,7 +148,7 @@ async function encodeGif(imageData) {
 }
 
 async function encodePdf(canvas, keepAlpha) {
-  const { PDFDocument } = await pdfLib();
+  const { PDFDocument } = await getPdfLib();
   const doc = await PDFDocument.create();
   const blob = await canvas.convertToBlob(keepAlpha ? { type: "image/png" } : { type: "image/jpeg", quality: 0.92 });
   const bytes = new Uint8Array(await blob.arrayBuffer());

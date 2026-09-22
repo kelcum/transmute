@@ -1,12 +1,7 @@
-import { CDN, lazy, loadScript, moduleWorkerURL, UserError } from "../util.js";
+import { CDN, lazy, loadScript, UserError } from "../util.js";
 import { htmlToPdf } from "../pdfwriter.js";
+import { openPdfjs } from "../pdf/common.js";
 
-const PDFJS = CDN + "pdfjs-dist@6.3.289/";
-const pdfjsLib = lazy(async () => {
-  const pdfjs = await import(PDFJS + "build/pdf.min.mjs");
-  pdfjs.GlobalWorkerOptions.workerPort = new Worker(moduleWorkerURL(PDFJS + "build/pdf.worker.min.mjs"), { type: "module" });
-  return pdfjs;
-});
 const mammothLib = lazy(async () => { await loadScript(CDN + "mammoth@1.12.3/mammoth.browser.min.js"); return window.mammoth; });
 const markedLib = lazy(async () => (await import(CDN + "marked@18.0.14/+esm")).marked);
 const turndownLib = lazy(async () => {
@@ -84,25 +79,7 @@ async function toHtml(file, inExt, status) {
   }
 }
 
-async function openPdf(file) {
-  const pdfjs = await pdfjsLib();
-  let task;
-  try {
-    task = pdfjs.getDocument({
-      data: new Uint8Array(await file.arrayBuffer()),
-      cMapUrl: PDFJS + "cmaps/",
-      cMapPacked: true,
-      standardFontDataUrl: PDFJS + "standard_fonts/",
-      wasmUrl: PDFJS + "wasm/",
-      iccUrl: PDFJS + "iccs/",
-    });
-    return { pdf: await task.promise, close: () => task.destroy() };
-  } catch (e) {
-    task?.destroy();
-    if (e?.name === "PasswordException") throw new UserError("This PDF is password-protected.");
-    throw new UserError("Couldn't read this PDF. It may be damaged.");
-  }
-}
+const openPdf = async (file) => openPdfjs(new Uint8Array(await file.arrayBuffer()));
 
 async function pdfToImages({ file, outExt, opts, base, progress, status, signal }) {
   status("Loading PDF engine…");
