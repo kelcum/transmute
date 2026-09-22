@@ -32,8 +32,6 @@ Each category has its own engine, loaded only the first time you need it:
 - **Spreadsheets & data:** [SheetJS](https://sheetjs.com), [js-yaml](https://github.com/nodeca/js-yaml), [fast-xml-parser](https://github.com/NaturalIntelligence/fast-xml-parser), [smol-toml](https://github.com/squirrelchat/smol-toml), [Papa Parse](https://www.papaparse.com).
 - **Archives:** [fflate](https://github.com/101arrowz/fflate) plus a small TAR reader/writer.
 
-`coi-serviceworker.js` enables cross-origin isolation on GitHub Pages (which can't set custom headers) so the WebAssembly engines can use multiple threads.
-
 ## Limitations
 
 - Word → PDF rebuilds the document with clean typography (headings, lists, tables, images, bold/italic); it isn't a pixel-perfect copy of Word's layout. CJK characters and emoji aren't in the embedded font and show as `?`.
@@ -46,4 +44,4 @@ Each category has its own engine, loaded only the first time you need it:
 python serve.py
 ```
 
-Then open http://localhost:8750. A local server is needed because the app uses ES modules. `serve.py` also sends the COOP/COEP headers that enable multi-threaded WebAssembly.
+Then open http://localhost:8750. A local server is needed because the app uses ES modules; any static server works.
