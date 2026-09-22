@@ -6,6 +6,7 @@ import documentEngine from "./engines/document.js";
 import spreadsheetEngine from "./engines/spreadsheet.js";
 import dataEngine from "./engines/data.js";
 import archiveEngine from "./engines/archive.js";
+import { routePdf, pdfFiles } from "./pdf/tools.js";
 
 const ENGINES = [imageEngine, mediaEngine, documentEngine, spreadsheetEngine, dataEngine, archiveEngine];
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -278,6 +279,26 @@ $("#downloadAll").addEventListener("click", async () => {
   }
 });
 
+// ---------- views ----------
+const inPdfView = () => !$("#pdfView").hidden;
+function route() {
+  const hash = location.hash.replace(/^#/, "");
+  const pdf = hash === "pdf" || hash.startsWith("pdf/");
+  const changed = pdf !== inPdfView() || pdf;
+  $("#convertView").hidden = pdf;
+  $("#pdfView").hidden = !pdf;
+  for (const a of document.querySelectorAll(".tabs a")) {
+    if (a.dataset.view === (pdf ? "pdf" : "convert")) a.setAttribute("aria-current", "page");
+    else a.removeAttribute("aria-current");
+  }
+  document.title = pdf ? "PDF tools — Transmute" : "Transmute — free file converter";
+  if (pdf) routePdf(hash.split("/")[1]);
+  if (changed) window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+route();
+const takeFiles = (files) => (inPdfView() ? pdfFiles(files) : addFiles(files));
+
 // ---------- input ----------
 const fileInput = $("#fileInput");
 $("#pickFiles").addEventListener("click", () => fileInput.click());
@@ -297,13 +318,13 @@ window.addEventListener("drop", (e) => {
   e.preventDefault();
   dragDepth = 0;
   overlay.hidden = true;
-  if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
+  if (e.dataTransfer.files.length) takeFiles([...e.dataTransfer.files]);
 });
 window.addEventListener("paste", (e) => {
   const files = [...(e.clipboardData?.files || [])];
   if (!files.length) return;
   e.preventDefault();
-  addFiles(files.map((f, i) => (f.name && f.name !== "image.png") ? f : new File([f], `pasted-${Date.now()}-${i}.${detectExt(f) || "png"}`, { type: f.type })));
+  takeFiles(files.map((f, i) => (f.name && f.name !== "image.png") ? f : new File([f], `pasted-${Date.now()}-${i}.${detectExt(f) || "png"}`, { type: f.type })));
 });
 
 // ---------- formats directory ----------

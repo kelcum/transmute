@@ -1,4 +1,5 @@
 import { CDN, lazy } from "./util.js";
+import { getPdfLib } from "./pdf/common.js";
 
 const PAGE_W = 595.28;
 const PAGE_H = 841.89;
@@ -8,7 +9,7 @@ const FONT_URL = CDN + "dejavu-fonts-ttf@2.37.3/ttf/";
 
 const libs = lazy(async () => {
   const [PDFLib, fontkit, ...fonts] = await Promise.all([
-    import(CDN + "pdf-lib@1.17.1/dist/pdf-lib.esm.min.js"),
+    getPdfLib(),
     import(CDN + "@pdf-lib/fontkit@1.1.1/+esm").then((m) => m.default),
     ...["DejaVuSans.ttf", "DejaVuSans-Bold.ttf", "DejaVuSans-Oblique.ttf", "DejaVuSans-BoldOblique.ttf", "DejaVuSansMono.ttf"].map((f) =>
       fetch(FONT_URL + f).then((r) => r.arrayBuffer())
@@ -16,6 +17,16 @@ const libs = lazy(async () => {
   ]);
   return { PDFLib, fontkit, fonts };
 });
+
+// Embeds DejaVu Sans so text outside Latin-1 (ą, ł, Cyrillic, Greek…) works.
+export async function embedUnicodeFont(doc) {
+  const { fontkit, fonts } = await libs();
+  doc.registerFontkit(fontkit);
+  const font = await doc.embedFont(new Uint8Array(fonts[0]), { subset: true });
+  const cs = new Set(font.getCharacterSet());
+  const clean = (text) => [...text].map((ch) => (ch === "\n" || cs.has(ch.codePointAt(0)) ? ch : "?")).join("");
+  return { font, clean };
+}
 
 const SKIP = new Set(["SCRIPT", "STYLE", "HEAD", "NOSCRIPT", "TEMPLATE", "TITLE", "META", "LINK", "SVG"]);
 const BLOCK = new Set(["P", "DIV", "SECTION", "ARTICLE", "HEADER", "FOOTER", "MAIN", "NAV", "ASIDE", "FIGURE", "FIGCAPTION",
