@@ -215,6 +215,7 @@ select:focus-visible, input:focus-visible, .btn:focus-visible, .rm:focus-visible
 }
 .promo:hover { border-color: var(--accent); }
 .promo-ico { width: 40px; height: 40px; flex: none; border-radius: 11px; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, #60a5fa, #2563eb); }
+.promo-ico.shots { background: linear-gradient(135deg, #ec4899, #be185d); }
 .promo-go { margin-left: auto; font-size: 1.3rem; color: var(--muted); }
 
 /* ---------- PDF tools ---------- */
@@ -278,6 +279,7 @@ select:focus-visible, input:focus-visible, .btn:focus-visible, .rm:focus-visible
 @media (hover: none) { .tc-actions { opacity: 1; } }
 .icon-btn { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); display: grid; place-items: center; cursor: pointer; box-shadow: 0 1px 3px rgb(0 0 0 / 0.2); }
 .icon-btn:hover { background: var(--surface-2); }
+.tcard > .btn { width: 100%; }
 
 .result-list { display: flex; flex-direction: column; }
 .result-list:empty { display: none; }

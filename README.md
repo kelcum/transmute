@@ -33,6 +33,10 @@ At [kelcum.github.io/transmute/#pdf](https://kelcum.github.io/transmute/#pdf):
 - **Sign & add text**: draw, type or upload a signature, add text and dates, then drag and resize them onto any page (rotated pages included)
 - **Fill forms**: fill text fields, checkboxes, radio buttons and dropdowns right on the page, optionally flattening the result
 
+## Screenshots
+
+At [kelcum.github.io/transmute/#shots](https://kelcum.github.io/transmute/#shots): pull screenshots out of a video, either evenly spaced across the whole thing or one every N seconds. Download individually or as a zip. For MP4, MOV, WebM, MKV and TS this reads exact frames at exact timestamps (verified against a test video, frame by frame); other formats fall back to FFmpeg.wasm.
+
 ## How it works
 
 Each category has its own engine, loaded only the first time you need it:
@@ -43,6 +47,7 @@ Each category has its own engine, loaded only the first time you need it:
 - **Spreadsheets & data:** [SheetJS](https://sheetjs.com), [js-yaml](https://github.com/nodeca/js-yaml), [fast-xml-parser](https://github.com/NaturalIntelligence/fast-xml-parser), [smol-toml](https://github.com/squirrelchat/smol-toml), [Papa Parse](https://www.papaparse.com).
 - **Archives:** [fflate](https://github.com/101arrowz/fflate) plus a small TAR reader/writer.
 - **PDF tools:** [pdf-lib](https://pdf-lib.js.org) edits the documents, pdf.js draws the page previews, and [SortableJS](https://sortablejs.github.io/Sortable/) handles drag-to-reorder.
+- **Screenshots:** Mediabunny's `CanvasSink` decodes exact frames at exact timestamps; FFmpeg.wasm is the fallback for formats Mediabunny can't demux.
 
 ## Limitations
 
