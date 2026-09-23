@@ -1,7 +1,9 @@
-import { CDN, lazy, moduleWorkerURL, UserError } from "../util.js";
+import { CDN, lazy, UserError } from "../util.js";
 import { FORMATS } from "../formats.js";
+import { getFfmpeg, ffmpegWriteInput, ffmpegCleanupInput } from "../ffmpeg.js";
 
-const MB_READABLE = ["mp4", "m4v", "mov", "webm", "mkv", "ts", "mp3", "wav", "ogg", "opus", "flac", "aac", "m4a"];
+export const MB_READABLE_VIDEO = ["mp4", "m4v", "mov", "webm", "mkv", "ts"];
+const MB_READABLE = [...MB_READABLE_VIDEO, "mp3", "wav", "ogg", "opus", "flac", "aac", "m4a"];
 const VIDEO_OUT = ["mp4", "webm", "mkv", "mov", "avi", "gif"];
 const AUDIO_OUT = ["mp3", "wav", "ogg", "opus", "flac", "aac", "m4a", "aiff"];
 
@@ -91,15 +93,6 @@ async function convertWithMediabunny({ file, outExt, opts, progress, signal }) {
   return new Blob([output.target.buffer], { type: FORMATS[outExt].mime });
 }
 
-const FF = CDN + "@ffmpeg/ffmpeg@0.12.15/dist/esm";
-const CORE = CDN + "@ffmpeg/core@0.12.10/dist/esm";
-const ffmpegLib = lazy(async () => {
-  const { FFmpeg } = await import(FF + "/index.js");
-  const ff = new FFmpeg();
-  await ff.load({ classWorkerURL: moduleWorkerURL(FF + "/worker.js"), coreURL: CORE + "/ffmpeg-core.js", wasmURL: CORE + "/ffmpeg-core.wasm" });
-  return ff;
-});
-
 function ffmpegArgs(inPath, outPath, outExt, opts) {
   const maxH = +opts.video.maxHeight || 0;
   const crf = { high: 20, medium: 25, low: 31 }[opts.video.quality] ?? 22;
@@ -132,33 +125,22 @@ function ffmpegArgs(inPath, outPath, outExt, opts) {
 
 async function convertWithFfmpeg({ file, inExt, outExt, opts, progress, status, signal }) {
   status("Loading video engine (≈30 MB, first time only)…");
-  const ff = await ffmpegLib();
+  const ff = await getFfmpeg();
   if (signal.aborted) throw new DOMException("Cancelled", "AbortError");
   status("Converting…");
 
-  const dir = "/in";
   const outPath = `/out.${outExt === "opus" ? "opus" : outExt}`;
-  let inPath;
-  let mounted = false;
-  try {
-    await ff.createDir(dir).catch(() => {});
-    await ff.mount("WORKERFS", { files: [file] }, dir);
-    mounted = true;
-    inPath = `${dir}/${file.name}`;
-  } catch {
-    inPath = `/input.${inExt}`;
-    await ff.writeFile(inPath, new Uint8Array(await file.arrayBuffer()));
-  }
+  const input = await ffmpegWriteInput(ff, file, `input.${inExt}`);
 
   const onProgress = ({ progress: p }) => { if (p >= 0 && p <= 1) progress(p); };
   const logs = [];
   const onLog = ({ message }) => { logs.push(message); if (logs.length > 30) logs.shift(); };
-  const onAbort = () => { ff.terminate(); ffmpegLib.reset(); };
+  const onAbort = () => { ff.terminate(); getFfmpeg.reset(); };
   ff.on("progress", onProgress);
   ff.on("log", onLog);
   signal.addEventListener("abort", onAbort);
   try {
-    const code = await ff.exec(ffmpegArgs(inPath, outPath, outExt, opts));
+    const code = await ff.exec(ffmpegArgs(input.path, outPath, outExt, opts));
     if (signal.aborted) throw new DOMException("Cancelled", "AbortError");
     if (code !== 0) {
       const hint = logs.filter((l) => /error|invalid|not found|unsupported/i.test(l)).pop();
@@ -172,8 +154,7 @@ async function convertWithFfmpeg({ file, inExt, outExt, opts, progress, status, 
     if (!signal.aborted) {
       ff.off("progress", onProgress);
       ff.off("log", onLog);
-      if (mounted) await ff.unmount(dir).catch(() => {});
-      else await ff.deleteFile(inPath).catch(() => {});
+      await ffmpegCleanupInput(ff, input);
     }
   }
 }

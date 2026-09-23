@@ -7,6 +7,7 @@ import spreadsheetEngine from "./engines/spreadsheet.js";
 import dataEngine from "./engines/data.js";
 import archiveEngine from "./engines/archive.js";
 import { routePdf, pdfFiles } from "./pdf/tools.js";
+import mountScreenshots from "./screenshots.js";
 
 const ENGINES = [imageEngine, mediaEngine, documentEngine, spreadsheetEngine, dataEngine, archiveEngine];
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -280,24 +281,31 @@ $("#downloadAll").addEventListener("click", async () => {
 });
 
 // ---------- views ----------
-const inPdfView = () => !$("#pdfView").hidden;
+const shots = mountScreenshots($("#shotsRoot"));
+const VIEWS = {
+  convert: { el: $("#convertView"), title: "Transmute — free file converter" },
+  pdf: { el: $("#pdfView"), title: "PDF tools — Transmute", onEnter: (sub) => routePdf(sub), files: pdfFiles },
+  shots: { el: $("#shotsView"), title: "Screenshots — Transmute", files: shots.addFiles },
+};
+let currentView = "convert";
 function route() {
   const hash = location.hash.replace(/^#/, "");
-  const pdf = hash === "pdf" || hash.startsWith("pdf/");
-  const changed = pdf !== inPdfView() || pdf;
-  $("#convertView").hidden = pdf;
-  $("#pdfView").hidden = !pdf;
+  const [name, sub] = hash.split("/");
+  const view = VIEWS[name] ? name : "convert";
+  const changed = view !== currentView;
+  currentView = view;
+  for (const [k, v] of Object.entries(VIEWS)) v.el.hidden = k !== view;
   for (const a of document.querySelectorAll(".tabs a")) {
-    if (a.dataset.view === (pdf ? "pdf" : "convert")) a.setAttribute("aria-current", "page");
+    if (a.dataset.view === view) a.setAttribute("aria-current", "page");
     else a.removeAttribute("aria-current");
   }
-  document.title = pdf ? "PDF tools — Transmute" : "Transmute — free file converter";
-  if (pdf) routePdf(hash.split("/")[1]);
+  document.title = VIEWS[view].title;
+  VIEWS[view].onEnter?.(sub);
   if (changed) window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", route);
 route();
-const takeFiles = (files) => (inPdfView() ? pdfFiles(files) : addFiles(files));
+const takeFiles = (files) => (VIEWS[currentView].files ? VIEWS[currentView].files(files) : addFiles(files));
 
 // ---------- input ----------
 const fileInput = $("#fileInput");
