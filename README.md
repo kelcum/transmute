@@ -20,7 +20,7 @@ Transmute is a file converter that runs entirely on your device. Files are never
 | Documents | PDF, DOCX, Markdown, HTML, TXT | PDF, HTML, Markdown, TXT, and PDF → PNG/JPG/WEBP |
 | Spreadsheets | XLSX, XLS, ODS, CSV, TSV | XLSX, XLS, ODS, CSV, TSV, JSON, HTML, PDF |
 | Data | JSON, YAML, XML, TOML, CSV | JSON, YAML, XML, TOML, CSV, XLSX |
-| Archives | ZIP, TAR, TAR.GZ | ZIP, TAR, TAR.GZ |
+| Archives | ZIP, TAR, TAR.GZ, RAR, 7Z, ISO, CAB | ZIP, TAR, TAR.GZ |
 
 ## PDF tools
 
@@ -45,7 +45,7 @@ Each category has its own engine, loaded only the first time you need it:
 - **Images:** Canvas, plus [heic-to](https://github.com/hoppergee/heic-to) for iPhone photos, [UTIF](https://github.com/photopea/UTIF.js) for TIFF and [gif.js](https://github.com/jnordberg/gif.js) for GIF.
 - **Documents:** [pdf.js](https://mozilla.github.io/pdf.js/) renders PDFs; [mammoth](https://github.com/mwilliamson/mammoth.js), [marked](https://marked.js.org) and [Turndown](https://github.com/mixmark-io/turndown) handle Word/Markdown/HTML; a small layout engine on top of [pdf-lib](https://pdf-lib.js.org) writes PDFs with embedded DejaVu fonts, so accented, Greek and Cyrillic text renders correctly.
 - **Spreadsheets & data:** [SheetJS](https://sheetjs.com), [js-yaml](https://github.com/nodeca/js-yaml), [fast-xml-parser](https://github.com/NaturalIntelligence/fast-xml-parser), [smol-toml](https://github.com/squirrelchat/smol-toml), [Papa Parse](https://www.papaparse.com).
-- **Archives:** [fflate](https://github.com/101arrowz/fflate) plus a small TAR reader/writer.
+- **Archives:** [fflate](https://github.com/101arrowz/fflate) plus a small TAR reader/writer for ZIP/TAR/TAR.GZ; [libarchive.js](https://github.com/nika-begiashvili/libarchivejs) (libarchive compiled to WASM) reads RAR, 7Z, ISO and CAB — useful on a Mac, which can't open those natively.
 - **PDF tools:** [pdf-lib](https://pdf-lib.js.org) edits the documents, pdf.js draws the page previews, and [SortableJS](https://sortablejs.github.io/Sortable/) handles drag-to-reorder.
 - **Screenshots:** Mediabunny's `CanvasSink` decodes exact frames at exact timestamps; FFmpeg.wasm is the fallback for formats Mediabunny can't demux.
 
