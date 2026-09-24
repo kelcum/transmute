@@ -37,6 +37,10 @@ At [kelcum.github.io/transmute/#pdf](https://kelcum.github.io/transmute/#pdf):
 
 At [kelcum.github.io/transmute/#shots](https://kelcum.github.io/transmute/#shots): pull screenshots out of a video, either evenly spaced across the whole thing or one every N seconds. Download individually or as a zip. For MP4, MOV, WebM, MKV and TS this reads exact frames at exact timestamps (verified against a test video, frame by frame); other formats fall back to FFmpeg.wasm.
 
+## Split & Join
+
+At [kelcum.github.io/transmute/#split](https://kelcum.github.io/transmute/#split): break any file — video, zip, anything — into numbered parts (`file.ext.001`, `.002`, ...) sized for email, an upload limit or a USB drive, then join them back together, on this site or with `cat file.ext.* > file.ext` / `copy /b` on the other end. Splitting a multi-gigabyte file is instant: each part is a lazy byte-range view, not a copy, so nothing gets read into memory until you actually download it.
+
 ## How it works
 
 Each category has its own engine, loaded only the first time you need it:
@@ -48,6 +52,7 @@ Each category has its own engine, loaded only the first time you need it:
 - **Archives:** [fflate](https://github.com/101arrowz/fflate) plus a small TAR reader/writer for ZIP/TAR/TAR.GZ; [libarchive.js](https://github.com/nika-begiashvili/libarchivejs) (libarchive compiled to WASM) reads RAR, 7Z, ISO and CAB — useful on a Mac, which can't open those natively.
 - **PDF tools:** [pdf-lib](https://pdf-lib.js.org) edits the documents, pdf.js draws the page previews, and [SortableJS](https://sortablejs.github.io/Sortable/) handles drag-to-reorder.
 - **Screenshots:** Mediabunny's `CanvasSink` decodes exact frames at exact timestamps; FFmpeg.wasm is the fallback for formats Mediabunny can't demux.
+- **Split & Join:** nothing but `Blob.slice()` and `new Blob([...parts])` — both lazy, so there's no engine to load and no size limit beyond disk space.
 
 ## Limitations
 

@@ -216,6 +216,7 @@ select:focus-visible, input:focus-visible, .btn:focus-visible, .rm:focus-visible
 .promo:hover { border-color: var(--accent); }
 .promo-ico { width: 40px; height: 40px; flex: none; border-radius: 11px; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, #60a5fa, #2563eb); }
 .promo-ico.shots { background: linear-gradient(135deg, #ec4899, #be185d); }
+.promo-ico.split { background: linear-gradient(135deg, #34d399, #059669); }
 .promo-go { margin-left: auto; font-size: 1.3rem; color: var(--muted); }
 
 /* ---------- PDF tools ---------- */
@@ -286,6 +287,7 @@ select:focus-visible, input:focus-visible, .btn:focus-visible, .rm:focus-visible
 .result-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
 .result-row .ok { color: var(--ok); }
 .result-row .err { color: var(--danger); }
+.sj-pane { display: flex; flex-direction: column; gap: 14px; }
 
 /* page viewer, signatures and form fields */
 .viewer { display: flex; flex-direction: column; align-items: center; gap: 28px; overflow-x: auto; padding-bottom: 24px; }
