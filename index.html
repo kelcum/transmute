@@ -24,6 +24,7 @@
     <a href="#" data-view="convert">Converter</a>
     <a href="#pdf" data-view="pdf">PDF tools</a>
     <a href="#shots" data-view="shots">Screenshots</a>
+    <a href="#split" data-view="split">Split files</a>
   </nav>
   <a class="gh" href="https://github.com/kelcum/transmute" target="_blank" rel="noopener">
     <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
@@ -161,6 +162,12 @@
     <span class="promo-go" aria-hidden="true">→</span>
   </a>
 
+  <a class="promo" href="#split">
+    <span class="promo-ico split" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="8" height="10" rx="1.5"/><rect x="14" y="7" width="8" height="10" rx="1.5"/><path d="M12 5v2M12 17v2M12 10.5v3"/></svg></span>
+    <span><b>Got a file that's too big to send?</b><br><span class="muted">Split it into smaller parts, then join them back together on the other end.</span></span>
+    <span class="promo-go" aria-hidden="true">→</span>
+  </a>
+
   <section class="formats">
     <h2>What it converts</h2>
     <div id="formatGrid" class="format-grid"></div>
@@ -179,6 +186,8 @@
       <dd>For MP4, MOV, WebM, MKV and TS, they're the exact frame at each timestamp. Other formats fall back to a slightly slower engine with the same result.</dd>
       <dt>Can it open RAR files on a Mac?</dt>
       <dd>Yes — drop in a RAR, 7Z, ISO or CAB file and save it as a ZIP, which macOS opens natively. It's one-way: RAR itself is a proprietary format that can be read but not created.</dd>
+      <dt>Does splitting a file copy it in memory?</dt>
+      <dd>No. Each part is a lightweight reference into the original file's bytes, so splitting a multi-gigabyte file is instant and doesn't need gigabytes of RAM.</dd>
     </dl>
   </section>
 </div>
@@ -208,6 +217,16 @@
   </section>
   <section class="card tool">
     <div class="tool-root" id="shotsRoot"></div>
+  </section>
+</div>
+
+<div id="splitView" hidden>
+  <section class="hero small">
+    <h1>Split any file.<span class="grad"> No size limit stops you.</span></h1>
+    <p class="lede">Break a huge file into smaller parts for email, uploads or a USB drive, and join them back together later. Works on any file type — video, zips, anything.</p>
+  </section>
+  <section class="card tool">
+    <div class="tool-root" id="splitRoot"></div>
   </section>
 </div>
 </main>

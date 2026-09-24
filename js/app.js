@@ -8,6 +8,7 @@ import dataEngine from "./engines/data.js";
 import archiveEngine from "./engines/archive.js";
 import { routePdf, pdfFiles } from "./pdf/tools.js";
 import mountScreenshots from "./screenshots.js";
+import mountSplitJoin from "./splitjoin.js";
 
 const ENGINES = [imageEngine, mediaEngine, documentEngine, spreadsheetEngine, dataEngine, archiveEngine];
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -282,10 +283,12 @@ $("#downloadAll").addEventListener("click", async () => {
 
 // ---------- views ----------
 const shots = mountScreenshots($("#shotsRoot"));
+const splitJoin = mountSplitJoin($("#splitRoot"));
 const VIEWS = {
   convert: { el: $("#convertView"), title: "Transmute — free file converter" },
   pdf: { el: $("#pdfView"), title: "PDF tools — Transmute", onEnter: (sub) => routePdf(sub), files: pdfFiles },
   shots: { el: $("#shotsView"), title: "Screenshots — Transmute", files: shots.addFiles },
+  split: { el: $("#splitView"), title: "Split files — Transmute", files: splitJoin.addFiles },
 };
 let currentView = "convert";
 function route() {
