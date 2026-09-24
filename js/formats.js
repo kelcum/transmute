@@ -66,6 +66,10 @@ export const FORMATS = {
   zip: F("ZIP", "archive", "application/zip"),
   tar: F("TAR", "archive", "application/x-tar"),
   "tar.gz": F("TAR.GZ", "archive", "application/gzip"),
+  rar: F("RAR", "archive", "application/vnd.rar"),
+  "7z": F("7Z", "archive", "application/x-7z-compressed"),
+  iso: F("ISO", "archive", "application/x-iso9660-image"),
+  cab: F("CAB", "archive", "application/vnd.ms-cab-compressed"),
 };
 
 const ALIASES = {
@@ -75,7 +79,11 @@ const ALIASES = {
 };
 
 const MIME_TO_EXT = Object.fromEntries(Object.entries(FORMATS).map(([ext, f]) => [f.mime, ext]));
-Object.assign(MIME_TO_EXT, { "image/jpg": "jpg", "audio/x-wav": "wav", "audio/mp3": "mp3", "image/heif": "heic" });
+Object.assign(MIME_TO_EXT, {
+  "image/jpg": "jpg", "audio/x-wav": "wav", "audio/mp3": "mp3", "image/heif": "heic",
+  "application/x-rar-compressed": "rar", "application/x-rar": "rar",
+  "application/x-iso9660-image": "iso", "application/x-cab-compressed": "cab",
+});
 
 export function detectExt(file) {
   const name = file.name.toLowerCase();
@@ -102,4 +110,5 @@ export const DEFAULT_OUT = {
   xlsx: "csv", xls: "xlsx", ods: "xlsx", csv: "xlsx", tsv: "xlsx",
   json: "yaml", yaml: "json", xml: "json", toml: "json",
   zip: "tar.gz", tar: "zip", "tar.gz": "zip",
+  rar: "zip", "7z": "zip", iso: "zip", cab: "zip",
 };

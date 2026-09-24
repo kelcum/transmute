@@ -1,7 +1,11 @@
 import { getFflate, UserError } from "../util.js";
 import { FORMATS } from "../formats.js";
+import { extractArchiveEntries } from "../libarchive.js";
 
 const TYPES = ["zip", "tar", "tar.gz"];
+// libarchive can read these, but never write them back (RAR is proprietary; the
+// others just aren't useful conversion targets), so they're input-only.
+const READ_ONLY = ["rar", "7z", "iso", "cab"];
 const enc = new TextEncoder();
 const dec = new TextDecoder();
 
@@ -83,23 +87,30 @@ function writeTar(entries) {
 export default {
   id: "archive",
   outputs(inExt) {
-    return TYPES.includes(inExt) ? TYPES.filter((t) => t !== inExt) : [];
+    if (TYPES.includes(inExt)) return TYPES.filter((t) => t !== inExt);
+    if (READ_ONLY.includes(inExt)) return TYPES;
+    return [];
   },
   async convert({ file, inExt, outExt, base, status }) {
     const fflate = await getFflate();
-    let buf = new Uint8Array(await file.arrayBuffer());
-    status("Reading archive…");
     let entries;
-    try {
-      if (inExt === "zip") {
-        const files = await cb(fflate.unzip, buf);
-        entries = Object.entries(files).map(([name, data]) => ({ name, data, dir: name.endsWith("/") }));
-      } else {
-        if (inExt === "tar.gz") buf = await cb(fflate.gunzip, buf);
-        entries = readTar(buf);
+    if (READ_ONLY.includes(inExt)) {
+      status("Loading archive engine (first time only)…");
+      entries = await extractArchiveEntries(file);
+    } else {
+      let buf = new Uint8Array(await file.arrayBuffer());
+      status("Reading archive…");
+      try {
+        if (inExt === "zip") {
+          const files = await cb(fflate.unzip, buf);
+          entries = Object.entries(files).map(([name, data]) => ({ name, data, dir: name.endsWith("/") }));
+        } else {
+          if (inExt === "tar.gz") buf = await cb(fflate.gunzip, buf);
+          entries = readTar(buf);
+        }
+      } catch {
+        throw new UserError("This archive couldn't be read. It may be damaged or encrypted.");
       }
-    } catch {
-      throw new UserError("This archive couldn't be read. It may be damaged or encrypted.");
     }
     status("Writing archive…");
     let out;
