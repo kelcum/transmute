@@ -124,8 +124,6 @@ async function encodeIco(img, opts) {
   return new Blob([header.buffer, ...pngs], { type: "image/x-icon" });
 }
 
-// GIF has no alpha channel, only one "transparent" palette entry, so removed
-// pixels are painted with a rare key color that gif.js maps to that entry.
 const GIF_KEY = [255, 0, 220];
 async function encodeGif(imageData) {
   const workerScript = await gifLib();

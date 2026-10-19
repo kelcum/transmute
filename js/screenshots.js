@@ -6,7 +6,6 @@ import { h, picker, statusBar, segmented, card, iconButton, ICONS } from "./ui.j
 
 const getMediabunny = lazy(() => import("mediabunny"));
 
-// Caps runaway screenshot counts (e.g. a long video with a tiny interval).
 const MAX_SHOTS = 400;
 
 const isVideo = (f) => FORMATS[detectExt(f)]?.cat === "video" || f.type.startsWith("video/");
@@ -30,7 +29,6 @@ function computeTimestamps(mode, { first, duration, count, interval }) {
   return Array.from({ length: k }, (_, i) => first + (i / (k - 1)) * span);
 }
 
-// CanvasSink yields HTMLCanvasElement on the main thread; only OffscreenCanvas has convertToBlob.
 function canvasToBlob(canvas, type, quality) {
   if (canvas.convertToBlob) return canvas.convertToBlob({ type, quality });
   return new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("toBlob failed"))), type, quality));

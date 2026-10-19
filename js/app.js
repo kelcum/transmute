@@ -20,7 +20,6 @@ function routesFor(inExt) {
   return routes;
 }
 
-// ---------- settings ----------
 const DEFAULT_SETTINGS = {
   image: { quality: 0.9, width: "", height: "", background: "#ffffff" },
   video: { quality: "original", maxHeight: 0 },
@@ -67,7 +66,6 @@ $("#settingsToggle").addEventListener("click", () => {
   $("#settingsToggle").setAttribute("aria-expanded", String(!panel.hidden));
 });
 
-// ---------- queue ----------
 const jobs = [];
 let nextId = 1;
 const rowsEl = $("#rows");
@@ -199,7 +197,6 @@ $("#bulkFormat").addEventListener("change", (e) => {
 
 $("#clearAll").addEventListener("click", () => { for (const j of [...jobs]) removeJob(j); });
 
-// ---------- running ----------
 const LIMITS = { heavy: 1, light: Math.max(2, Math.min(4, (navigator.hardwareConcurrency || 4) >> 1)) };
 const running = { heavy: 0, light: 0 };
 
@@ -281,7 +278,6 @@ $("#downloadAll").addEventListener("click", async () => {
   }
 });
 
-// ---------- views ----------
 const shots = mountScreenshots($("#shotsRoot"));
 const splitJoin = mountSplitJoin($("#splitRoot"));
 const VIEWS = {
@@ -310,7 +306,6 @@ window.addEventListener("hashchange", route);
 route();
 const takeFiles = (files) => (VIEWS[currentView].files ? VIEWS[currentView].files(files) : addFiles(files));
 
-// ---------- input ----------
 const fileInput = $("#fileInput");
 $("#pickFiles").addEventListener("click", () => fileInput.click());
 fileInput.addEventListener("change", () => { addFiles(fileInput.files); fileInput.value = ""; });
@@ -338,7 +333,6 @@ window.addEventListener("paste", (e) => {
   takeFiles(files.map((f, i) => (f.name && f.name !== "image.png") ? f : new File([f], `pasted-${Date.now()}-${i}.${detectExt(f) || "png"}`, { type: f.type })));
 });
 
-// ---------- formats directory ----------
 (function renderFormats() {
   const byCat = {};
   let pairs = 0;

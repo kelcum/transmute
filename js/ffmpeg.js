@@ -1,7 +1,5 @@
 import { CDN, lazy, moduleWorkerURL } from "./util.js";
 
-// Shared across the media conversion engine and the screenshots tool, so the
-// ~30 MB core is only ever downloaded once per session.
 const FF = CDN + "@ffmpeg/ffmpeg@0.12.15/dist/esm";
 const CORE = CDN + "@ffmpeg/core@0.12.10/dist/esm";
 
@@ -12,8 +10,6 @@ export const getFfmpeg = lazy(async () => {
   return ff;
 });
 
-// Writes a file the way media.js does: mounted from disk when possible (avoids
-// copying large files into the wasm heap), falling back to an in-memory write.
 export async function ffmpegWriteInput(ff, file, fallbackName) {
   const dir = "/in";
   try {

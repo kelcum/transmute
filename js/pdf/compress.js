@@ -6,8 +6,6 @@ const LEVELS = {
   strong: { quality: 0.6, dpi: 110 },
 };
 
-// Re-encodes the JPEG photos inside a PDF at lower quality/resolution.
-// Everything else (text, vector art) is left untouched, so text stays sharp.
 async function shrinkImages(bytes, { quality, maxDim }, onStep) {
   const { PDFName, PDFRawStream, PDFNumber, PDFArray } = await getPdfLib();
   const doc = await openPdfLib(bytes);
@@ -24,7 +22,6 @@ async function shrinkImages(bytes, { quality, maxDim }, onStep) {
       const n = cs.lookup(1)?.dict?.get(N("N"));
       cs = n && +String(n) === 4 ? "cmyk" : "/DeviceRGB";
     }
-    // CMYK JPEGs decode inconsistently in browsers; leave them alone.
     if (!["/DeviceRGB", "/DeviceGray"].includes(String(cs))) continue;
     let bmp;
     try { bmp = await createImageBitmap(new Blob([obj.contents], { type: "image/jpeg" })); } catch { continue; }
@@ -45,7 +42,6 @@ async function shrinkImages(bytes, { quality, maxDim }, onStep) {
   return doc.save({ useObjectStreams: true });
 }
 
-// Replaces every page with a JPEG snapshot of itself. Smallest output, but text is no longer selectable.
 async function rasterize(bytes, { quality, dpi }, onStep) {
   const { PDFDocument } = await getPdfLib();
   const { pdf, close } = await openPdfjs(bytes);

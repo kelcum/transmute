@@ -3,7 +3,6 @@ import { h, picker as genericPicker, statusBar, sizeChange, card, iconButton, IC
 
 export { h, statusBar, sizeChange, card, iconButton, ICONS, segmented };
 
-// PDF tools default to accepting only PDFs; pass an explicit `accept` to widen this.
 export function picker(opts) {
   return genericPicker({ accept: ".pdf,application/pdf", ...opts });
 }
@@ -11,8 +10,6 @@ export function picker(opts) {
 export const PDFJS = CDN + "pdfjs-dist@6.3.289/";
 
 export const getPdfjs = lazy(() => import(PDFJS + "build/pdf.min.mjs"));
-// An explicitly passed worker outlives each document. With pdf.js's implicit shared
-// worker, closing one document tears it down under any other open document.
 const getWorker = lazy(async () => {
   const pdfjs = await getPdfjs();
   return new pdfjs.PDFWorker({ port: new Worker(moduleWorkerURL(PDFJS + "build/pdf.worker.min.mjs"), { type: "module" }) });
@@ -20,7 +17,6 @@ const getWorker = lazy(async () => {
 export const getPdfLib = lazy(() => import(CDN + "pdf-lib@1.17.1/dist/pdf-lib.esm.min.js"));
 export const getSortable = lazy(async () => (await import(CDN + "sortablejs@1.15.7/modular/sortable.esm.js")).Sortable);
 
-// pdf.js transfers the buffer it's given to its worker, so always hand it a copy.
 export async function openPdfjs(bytes) {
   const pdfjs = await getPdfjs();
   const task = pdfjs.getDocument({
@@ -53,7 +49,6 @@ export async function openPdfLib(bytes) {
   return doc;
 }
 
-// "print" intent renders without requestAnimationFrame, so it keeps working in background tabs.
 export async function renderPage(pdf, pageNumber, width, { forms = true } = {}) {
   const pdfjs = await getPdfjs();
   const page = await pdf.getPage(pageNumber);
@@ -110,8 +105,6 @@ export async function addImagePage(doc, file) {
   doc.addPage([w, ht]).drawImage(img, { x: 0, y: 0, width: w, height: ht });
 }
 
-// Renders every page, in order, into a scrollable column. Overlays (signatures,
-// form inputs) are positioned in each page's CSS-pixel space.
 export async function pageViewer(container, pdf, { forms = true, onPage } = {}) {
   const width = Math.min(860, Math.max(260, container.clientWidth - 8));
   const pages = [];

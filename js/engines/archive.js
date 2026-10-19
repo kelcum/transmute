@@ -3,8 +3,6 @@ import { FORMATS } from "../formats.js";
 import { extractArchiveEntries } from "../libarchive.js";
 
 const TYPES = ["zip", "tar", "tar.gz"];
-// libarchive can read these, but never write them back (RAR is proprietary; the
-// others just aren't useful conversion targets), so they're input-only.
 const READ_ONLY = ["rar", "7z", "iso", "cab"];
 const enc = new TextEncoder();
 const dec = new TextDecoder();

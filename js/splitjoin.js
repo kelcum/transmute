@@ -2,11 +2,8 @@ import { downloadBlob, formatBytes } from "./util.js";
 import { h, picker, statusBar, segmented } from "./ui.js";
 
 const UNITS = { KB: 1024, MB: 1024 ** 2, GB: 1024 ** 3 };
-// Matches our own "name.ext.007" convention, and loosely enough to pick up
-// other splitters' numbered parts too (padded or not).
 const PART_RE = /^(.*)\.(\d{1,5})$/;
 
-// Blob.slice() is a lazy view, not a copy, so this is instant regardless of file size.
 function planParts(file, partSize) {
   const total = Math.max(1, Math.ceil(file.size / partSize));
   const pad = Math.max(3, String(total).length);
@@ -48,7 +45,6 @@ export default function mountSplitJoin(root) {
   let splitFile = null;
   let splitResults = [];
 
-  // ---------- split ----------
   const splitInfo = h("p", { class: "tool-file", hidden: true });
   const sizeMode = segmented([["size", "Max size per part"], ["count", "Number of parts"]], "size", () => syncSizeMode());
   const sizeIn = h("input", { type: "number", class: "text-in", min: "1", value: "500" });
@@ -136,7 +132,6 @@ export default function mountSplitJoin(root) {
     splitAll.disabled = false;
   }
 
-  // ---------- join ----------
   const joinList = h("div", { class: "result-list" });
   const joinNote = h("p", { class: "tool-hint", hidden: true });
   const joinWork = h("div", { class: "tool-work", hidden: true }, joinList, joinNote);
@@ -180,7 +175,6 @@ export default function mountSplitJoin(root) {
     }
   }
 
-  // ---------- mode switch ----------
   const modeToggle = segmented([["split", "Split a file"], ["join", "Join parts"]], "split", (v) => {
     splitPane.hidden = v !== "split";
     joinPane.hidden = v !== "join";

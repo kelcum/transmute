@@ -23,7 +23,6 @@ async function parse(text, ext) {
   }
 }
 
-// TOML and XML need a single object at the root; CSV needs a list of flat records.
 function asRecords(data) {
   if (Array.isArray(data)) return data;
   if (data && typeof data === "object") {
@@ -54,7 +53,6 @@ async function serialize(data, ext) {
       catch (e) { throw new UserError("This data can't be represented in TOML: " + e.message); }
     }
     case "xml": {
-      // XML allows exactly one root element; an array under the only key would repeat it.
       const keys = data && typeof data === "object" && !Array.isArray(data) ? Object.keys(data).filter((k) => !k.startsWith("?")) : [];
       let root = data;
       if (Array.isArray(data)) root = { root: { item: data } };

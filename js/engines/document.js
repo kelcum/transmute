@@ -98,7 +98,6 @@ async function pdfToImages({ file, outExt, opts, base, progress, status, signal 
       const ctx = canvas.getContext("2d");
       ctx.fillStyle = "#fff";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      // "print" intent renders without requestAnimationFrame, so it doesn't stall in background tabs.
       await page.render({ canvas, canvasContext: ctx, viewport: vp, intent: "print" }).promise;
       const blob = await canvas.convertToBlob({ type, quality: +opts.image.quality });
       const suffix = pdf.numPages > 1 ? `-page-${String(i).padStart(pad, "0")}` : "";

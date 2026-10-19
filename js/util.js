@@ -2,7 +2,6 @@ export const CDN = "https://cdn.jsdelivr.net/npm/";
 
 export class UserError extends Error {}
 
-// Memoizes an async loader, but forgets a failed attempt so it can be retried.
 export function lazy(loader) {
   let p = null;
   const get = () => (p ??= loader().catch((e) => { p = null; throw e; }));
@@ -24,8 +23,6 @@ export function loadScript(url) {
   return scripts.get(url);
 }
 
-// Workers can't be constructed from a cross-origin URL, but a same-origin
-// blob module that imports the CDN script can.
 export function moduleWorkerURL(url) {
   return URL.createObjectURL(new Blob([`import ${JSON.stringify(url)};`], { type: "text/javascript" }));
 }

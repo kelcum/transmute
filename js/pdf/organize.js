@@ -77,7 +77,6 @@ export default {
         const { PDFDocument, degrees } = await getPdfLib();
         const out = await PDFDocument.create();
         const order = pages();
-        // Copy each source's pages in one batch so shared fonts/images aren't duplicated.
         const copied = new Map();
         for (const d of new Set(order.map((p) => p.doc))) {
           status.set(`Reading ${docs[d].name}…`);

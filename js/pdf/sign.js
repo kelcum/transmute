@@ -4,9 +4,7 @@ import { CDN, lazy, downloadBlob, formatBytes } from "../util.js";
 
 const SCRIPT_FONTS = [["Dancing Script", 600], ["Caveat", 600], ["Great Vibes", 400]];
 const INKS = { black: "#111827", blue: "#1d3fb0" };
-// Matches the font embedded in the PDF, so text lands exactly where it's shown.
 const TEXT_FONT = "TransmuteText";
-// DejaVu Sans: (ascender − half the leading at line-height 1.25) / em.
 const BASELINE = 0.971;
 const LINE = 1.25;
 const PAD = 3;
@@ -55,7 +53,6 @@ function signatureDialog() {
   let upload = null;
   const dlg = h("dialog", { class: "sig-dialog" });
 
-  // Draw
   const pad = h("canvas", { class: "sig-pad", width: 1000, height: 320 });
   const pctx = pad.getContext("2d");
   let drawn = false;
@@ -91,7 +88,6 @@ function signatureDialog() {
   pad.addEventListener("pointercancel", endStroke);
   const clearPad = () => { pctx.clearRect(0, 0, pad.width, pad.height); drawn = false; };
 
-  // Type
   const nameIn = h("input", { type: "text", class: "text-in", placeholder: "Type your name", maxlength: 60 });
   const fontList = h("div", { class: "font-list" });
   const renderFontList = () => {
@@ -101,7 +97,6 @@ function signatureDialog() {
   };
   nameIn.addEventListener("input", renderFontList);
 
-  // Upload
   const upIn = h("input", { type: "file", accept: "image/png,image/jpeg,image/webp" });
   const whiteOut = h("input", { type: "checkbox", checked: true });
   const upPreview = h("img", { class: "up-preview", alt: "" });
@@ -395,7 +390,6 @@ export default {
           const rotate = degrees(it.page.rotation);
           if (it.type === "image") {
             if (!images.has(it.src)) images.set(it.src, await doc.embedPng(await (await fetch(it.src)).arrayBuffer()));
-            // Anchor at the box's on-screen bottom-left; rotating by the page's /Rotate keeps it upright.
             const [x, y] = vp.convertToPdfPoint(it.x, it.y + it.h);
             page.drawImage(images.get(it.src), { x, y, width: it.w / s, height: it.h / s, rotate });
           } else {

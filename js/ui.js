@@ -1,7 +1,5 @@
 import { UserError, formatBytes } from "./util.js";
 
-// Generic DOM/UI helpers shared by the PDF tools and other multi-tool views.
-
 export function h(tag, attrs = {}, ...children) {
   const el = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
@@ -14,7 +12,6 @@ export function h(tag, attrs = {}, ...children) {
   return el;
 }
 
-// A drop/choose area scoped to one tool. Page-level drops are routed here too.
 export function picker({ multiple, accept, label, hint, onFiles }) {
   const input = h("input", { type: "file", accept, hidden: true, multiple });
   input.addEventListener("change", () => { onFiles([...input.files]); input.value = ""; });

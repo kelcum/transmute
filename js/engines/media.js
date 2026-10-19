@@ -7,7 +7,6 @@ const MB_READABLE = [...MB_READABLE_VIDEO, "mp3", "wav", "ogg", "opus", "flac", 
 const VIDEO_OUT = ["mp4", "webm", "mkv", "mov", "avi", "gif"];
 const AUDIO_OUT = ["mp3", "wav", "ogg", "opus", "flac", "aac", "m4a", "aiff"];
 
-// Output formats Mediabunny can write, with the codecs we want in them.
 const MB_OUT = {
   mp4: { cls: "Mp4OutputFormat", video: ["avc"], audio: "aac" },
   mov: { cls: "MovOutputFormat", video: ["avc"], audio: "aac" },
@@ -77,8 +76,6 @@ async function convertWithMediabunny({ file, outExt, opts, progress, signal }) {
     },
   });
 
-  // Tracks the browser can't decode would silently vanish from the output;
-  // hand those files to ffmpeg instead.
   const lost = conversion.discardedTracks.filter((d) => d.reason !== "discarded_by_user" && !d.reason.startsWith("max_track"));
   if (!conversion.isValid || lost.length || !conversion.utilizedTracks.length) return null;
 

@@ -18,7 +18,6 @@ const libs = lazy(async () => {
   return { PDFLib, fontkit, fonts };
 });
 
-// Embeds DejaVu Sans so text outside Latin-1 (ą, ł, Cyrillic, Greek…) works.
 export async function embedUnicodeFont(doc) {
   const { fontkit, fonts } = await libs();
   doc.registerFontkit(fontkit);
@@ -153,7 +152,6 @@ export async function htmlToPdf(html, title) {
   const ensure = (h) => { if (y - h < MARGIN) newPage(); };
   newPage();
 
-  // Word-wraps styled runs into the content column, drawing as it goes.
   const flow = (runs, { size, indent = 0, marker = null, quote = 0 }) => {
     const x0 = MARGIN + indent + quote * 14;
     const maxW = CONTENT_W - indent - quote * 14;

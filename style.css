@@ -200,7 +200,6 @@ select:focus-visible, input:focus-visible, .btn:focus-visible, .rm:focus-visible
   border: 3px dashed var(--accent); border-radius: 24px; padding: 48px 64px; font-size: 1.3rem; font-weight: 700; background: var(--surface);
 }
 
-/* ---------- navigation ---------- */
 .top { gap: 12px; }
 .tabs { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); }
 .tabs a { color: var(--muted); text-decoration: none; font-weight: 600; font-size: 0.9rem; padding: 6px 14px; border-radius: 999px; white-space: nowrap; }
@@ -219,7 +218,6 @@ select:focus-visible, input:focus-visible, .btn:focus-visible, .rm:focus-visible
 .promo-ico.split { background: linear-gradient(135deg, #34d399, #059669); }
 .promo-go { margin-left: auto; font-size: 1.3rem; color: var(--muted); }
 
-/* ---------- PDF tools ---------- */
 .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
 .tool-card {
   display: block; padding: 20px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border);
@@ -289,7 +287,6 @@ select:focus-visible, input:focus-visible, .btn:focus-visible, .rm:focus-visible
 .result-row .err { color: var(--danger); }
 .sj-pane { display: flex; flex-direction: column; gap: 14px; }
 
-/* page viewer, signatures and form fields */
 .viewer { display: flex; flex-direction: column; align-items: center; gap: 28px; overflow-x: auto; padding-bottom: 24px; }
 .pv-page { position: relative; flex: none; background: #fff; box-shadow: 0 2px 12px rgb(0 0 0 / 0.25); color-scheme: light; }
 .pv-page > img { display: block; width: 100%; height: 100%; }
